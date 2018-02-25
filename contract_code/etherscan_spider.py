@@ -1,6 +1,6 @@
 import scrapy
 
-NEXT_BUTTON_TEXT = '"Next"'
+NEXT_BUTTON_TEXT = 'Next'
 
 
 class EtherscanContractSpider(scrapy.Spider):
@@ -18,7 +18,7 @@ class EtherscanContractSpider(scrapy.Spider):
         # Retry on most error codes since proxies fail for different reasons
         'RETRY_HTTP_CODES': [500, 503, 504, 400, 403, 404, 408],
 
-        # 'DOWNLOAD_DELAY': 3,
+        'DOWNLOAD_DELAY': 1,
 
         'AUTOTHROTTLE_ENABLED': True,
         'AUTOTHROTTLE_START_DELAY': 5,
@@ -38,7 +38,7 @@ class EtherscanContractSpider(scrapy.Spider):
             yield contracts_verified_response.follow("/address/%s#code" % address, self.parse_contract)
 
         next_page = contracts_verified_response.xpath(
-            '//a[contains(., %s)][not(@disabled="disabled")]' % NEXT_BUTTON_TEXT)
+            '//a[contains(., "%s")][not(@disabled="disabled")]' % NEXT_BUTTON_TEXT)
         if next_page is not None:
             yield contracts_verified_response.follow(next_page.css('::attr(href)').extract_first(), self.parse)
 
